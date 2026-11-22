@@ -80,7 +80,9 @@ export const agentPackageInputSchema = z.object({
   learningLoop: z.object({ cadence: nonEmpty, description: nonEmpty }),
   // 13 — Quality control agent
   qualityControlAgent: z.object({
-    partNumber: z.string().regex(/^KF-AGT-Q\d{2}$/, "Use the form KF-AGT-Q## (e.g. KF-AGT-Q10)"),
+    // QC is a role. Independently issued agents retain their Control number; legacy paired identities remain valid.
+    // Structural validation does not establish registration or certification. Consumers verify the canonical row.
+    partNumber: z.string().regex(/^KF-AGT-(?:\d{3,}|Q\d{2})$/, "Use an issued KF-AGT number or an existing legacy KF-AGT-Q## identity"),
     name: nonEmpty,
   }),
   // 14 — API (as needed)
@@ -154,7 +156,7 @@ const REQUIRED_PART_LABELS: Record<string, string> = {
   definitionOfDone: "Definition of Done (at least one)",
   measures: "Measures (at least one)",
   learningLoop: "Learning loop",
-  qualityControlAgent: "Quality control agent (KF-AGT-Q##)",
+  qualityControlAgent: "Quality control agent (issued Kendall Control identity)",
 };
 
 export interface ConformanceResult {
